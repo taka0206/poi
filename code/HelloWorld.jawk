@@ -1,0 +1,51 @@
+# Jawk+POIによる”こんにちは。世界”
+
+import org.apache.poi.hssf.usermodel.*
+import org.apache.poi.hssf.util.*
+
+BEGIN {
+    mode = $1
+    if (mode != "2003" && mode != "2007") {
+        print("パラメーターは、2003 か 2007を指定してください。\n")
+        contine
+    }
+
+    #ワークブックの生成
+    if (mode == "2003") {
+        workBook = new HSSFWorkbook()
+    }
+    else {
+        workBook = new XSSFWorkbook()
+    }
+    #シートの生成
+    sheet = workBook.createSheet("HelloWorld")
+    #rowの生成
+    row = sheet.createRow(0)
+    #cellの生成
+    cell = row.createCell(0)
+    #cellスタイルの生成
+    st = workBook.createCellStyle()
+    #フォントの生成
+    fnt = workBook.createFont()
+    fnt.setFontName("ＭＳ 明朝")
+    pnt = new java.lang.Integer(48)
+    fnt.setFontHeightInPoints(pnt.shortValue())
+    cl = new java.lang.Integer(49)
+    fnt.setColor(cl.shortValue())
+    #cellスタイルにフォント設定
+    st.setFont(fnt)
+    #cellにスタイル設定
+    cell.setCellStyle(st)
+    #cellに値を設定
+    cell.setCellValue("Hello World On Jawk♪")
+    #ワークブック書き出し
+    if (mode == "2003") {
+        fout = new java.io.FileOutputStream("./HelloWorld-Jawk.xls")
+    }
+    else {
+        fout = new java.io.FileOutputStream("./HelloWorld-Jawk.xlsx")
+    }
+    workBook.write(fout)
+    fout.close() 
+    print "done!"
+}
